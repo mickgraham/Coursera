@@ -1,0 +1,88 @@
+<!doctype html>
+<html>
+    <head>
+        <title>Matching Game Part 4</title>
+        <style>
+            img { position:absolute; }
+            div { position:absolute; width:500px; height:500px; }
+            #rightSide { left:500px; border-left:1px solid black; }
+        </style>
+        <script>
+            // Initialise variables.
+            var numberOfFaces = 5
+            
+            // Function called to remove the faces.
+            function removeFaces() {
+                var theLeftSide = document.getElementById("leftSide")
+                var theRightSide = document.getElementById("rightSide")
+                
+                while (theLeftSide.firstChild) {
+                    theLeftSide.removeChild(theLeftSide.firstChild)
+                }
+                while (theRightSide.firstChild) {
+                    theRightSide.removeChild(theRightSide.firstChild)
+                }
+            }
+            
+            // Function called to generate the faces.
+            function generateFaces() {
+                var theLeftSide = document.getElementById("leftSide")
+                var theRightSide = document.getElementById("rightSide")
+                var theBody = document.getElementsByTagName("body")[0]
+
+                // Remove any existing faces.
+                removeFaces();
+            
+                // Generate the left side images.
+                for (var index=0; index < numberOfFaces; index++) {
+                    var thisImg = document.createElement("img")
+                    thisImg.setAttribute('src', 'https://home.cse.ust.hk/~rossiter/mooc/matching_game/smile.png')
+                    thisImg.style.top = Math.floor(Math.random() * 400) + "px"
+                    thisImg.style.left = Math.floor(Math.random() * 400) + "px"
+                    theLeftSide.appendChild(thisImg)
+                }
+                
+                // Clone the left side images.
+                leftSideImages = theLeftSide.cloneNode(true)
+                
+                // Delete the last child of the cloned images.
+                leftSideImages.removeChild(leftSideImages.lastChild)
+                
+                // Add the cloned images to the right side.
+                theRightSide.appendChild(leftSideImages)
+                
+                // Add an event handler function to go to the next level when the extra face is clicked on.
+                theLeftSide.lastChild.onclick =
+                    function nextLevel(event){
+                        event.stopPropagation()
+                        numberOfFaces += 5
+                        generateFaces()
+                    }
+                    
+                // Add an event handler function to the body to finish the game on any other click.
+                theBody.onclick =
+                    function gameOver() {
+                        alert("Game Over!")
+                        theBody.onclick = null
+                        theLeftSide.lastChild.onclick = null
+                    }
+                    
+                // Delete the child nodes.
+                /*theBody.onclick = null
+                theLeftSide.lastChild.onclick = null
+                while (theLeftSide.firstChild) {
+                    theLeftSide.removeChild(theLeftSide.firstChild)
+                }
+                while (theRightSide.firstChild) {
+                    theRightSide.removeChild(theRightSide.firstChild)
+                }*/
+            }
+        </script>
+    </head>
+    <body onload="generateFaces()">
+        <h1>Matching Game Part 4</h1>
+        <p>Click on the extra smiling face on the left.</p>
+        <div id="leftSide"></div>
+        <div id="rightSide"></div>
+    </body>
+</html>
